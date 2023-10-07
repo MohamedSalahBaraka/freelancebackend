@@ -16,16 +16,21 @@ import db from './db.js';
 import { getUsersWithMessages } from './getmessages.js';
 import Api from './Controller/Api.js';
 import Subscription from './Controller/Subscription.js';
+import path from 'node:path';
+import { fileURLToPath } from 'url';
 
 // Create an express application
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
-app.get('/', (req, res) => {
-    res.set('Content-Type', 'text/html');
-    res.status(200).send("<h1>Hello GFG Learner!</h1>");
-});
+// Get the URL of the current file
+const __filename = fileURLToPath(import.meta.url);
+
+// Get the directory name of the current file
+const __dirname = path.dirname(__filename);
+const PORT = process.env.PORT || 3030;
+
 app.use(express.json());
 // Define a custom middleware function
 app.use(cors());
@@ -35,7 +40,10 @@ app.use('/dashboard', auth);
 app.use('/dashboard', isAdmin);
 app.use('/api', auth);
 app.use('/uploads', express.static('uploads'));
-
+app.use(express.static(path.join(__dirname, 'build')));
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 // socket .io
 
 io.use((socket, next) => {
@@ -240,7 +248,7 @@ app.delete('/api/bids/:id', (req, res) => Bid.delete(req, res));
 
 
 // Start the server on port 3000
-server.listen(3030, () => {
+server.listen(PORT, () => {
     // Print a message when the server is ready
-    console.log('Server is running on http://localhost:3000');
+    console.log('Server is running on http://localhost:' + PORT);
 });
