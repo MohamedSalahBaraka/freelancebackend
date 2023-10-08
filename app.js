@@ -41,9 +41,7 @@ app.use('/dashboard', isAdmin);
 app.use('/api', auth);
 app.use('/uploads', express.static('uploads'));
 app.use(express.static(path.join(__dirname, 'build')));
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+
 // socket .io
 
 io.use((socket, next) => {
@@ -245,7 +243,9 @@ app.get('/api/bids/edit/:id', (req, res) => Bid.edit(req, res));
 app.post('/api/bids', (req, res) => Api.createBid(req, res));
 app.put('/api/bids', (req, res) => Api.updateBid(req, res));
 app.delete('/api/bids/:id', (req, res) => Bid.delete(req, res));
-
+app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 // Start the server on port 3000
 server.listen(PORT, () => {

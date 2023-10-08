@@ -61,7 +61,7 @@ const User = {
                 });
             } else {
                 // If no, send a 404 not found response
-                return res.status(404).send({ message: "user not found" });
+                return res.status(422).send({ message: "user not found" });
             }
         });
     },
